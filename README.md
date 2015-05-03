@@ -2,7 +2,10 @@
 
 ###Objectives
 - Understand what D3 is
--
+- Be able to use basic selectors in D3
+- Be able to dynamically change styles, add transitions, and connect data and DOM
+- Create a bar graph using D3
+
 
 ###What is D3?
 
@@ -67,7 +70,7 @@ This will essentially get all your paragraphs and make them red. This is equival
 
 ###Targeting single elements
 
-	d3.select("body").style("background-color", "black");
+	d3.select("body").style("background-color", "blue");
 
 ###Activity
 
@@ -128,5 +131,110 @@ In `main.js`
 	// Exit…
 	p.exit().remove();
 
+###Transitions
+
+Let's make the page black using a transition
+
+	d3.select("body").transition().style("background-color", "black");
+
+Add a duration
+
+	d3.select("body").transition().duration(2500).style("background-color", "black");
+
+###Putting it together
+
+Let's create a bar graph!
+
+In `index.html`
+
+
+    <div id="chart">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+
+In `style.css`
+
+	.bar {
+	    float: left;
+	    width: 30px;
+	    margin-right: 20px;
+	    background-color: #F4F5F7;
+		border: 1px solid #C5C5C5;
+		text-align: center;
+	    font-size: 10px;
+	  }
 	
-   
+In your `main.js`, let's make all the bars equal to 40px
+
+	// Select all bars within the bar chart
+	var bars = d3.select("#chart").selectAll(".bar");
+	bars.style("height", "100px");
+
+You should see four bars on your screen!
+
+###Add data to it
+
+In `main.js`
+
+	var numbers = [15, 22, 42, 72];
+
+	var bars = d3.select("#chart").selectAll(".bar").data(numbers).style("height", function(d){
+	  return d;
+	})
+	.style("margin-top", function(d){
+	  return 100 - d;
+	}).text(String);
+
+###Create an bar graph that displays random numbers
+
+Create an update functions and tie it to a click event for the bars
+
+	function update(){
+	  var numbers = [];
+	
+	  for(var i = 0; i < 4; i++){
+	    var rand = Math.floor(Math.random()*100);
+	    numbers.push(rand);
+	  }
+	
+	  var selection = d3.select("#chart").selectAll(".bar").data(numbers).style("height", function(d){
+	    return d;
+	  }).style("margin-top", function(d){
+	    return 100 - d;
+	  }).text(String);
+	}
+	
+	var numbers = [15, 8, 42, 4];
+	
+	var bars = d3.select("#chart").selectAll(".bar").data(numbers).style("height", function(d){
+	  return d;
+	})
+	.style("margin-top", function(d){
+	  return 100 - d;
+	}).text(String).on('click', function(e, i){
+	  update();
+	});
+ 
+ Add some transitions and durations to it
+ 
+ 	function update(){
+	  var numbers = [];
+	
+	  for(var i = 0; i < 4; i++){
+	    var rand = Math.floor(Math.random()*100);
+	    numbers.push(rand);
+	  }
+	
+	  var selection = d3.select("#chart").selectAll(".bar").data(numbers).transition().duration(500).style("height",     function(d){
+	    return d;
+	  }).style("margin-top", function(d){
+	    return 100 - d;
+	  }).text(String);
+	
+	
+	}
+
+###Congrats! You are now able to connect data and DOM together using D3
